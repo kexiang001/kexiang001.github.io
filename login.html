@@ -101,28 +101,32 @@
 		<a href="#"><p class="p4s">更多登录方式&gt;</p></a>	
 </body>
 </html>
-<script src="js/login&register.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">
 	var oUsername = document.getElementById('txt1')
 	var oPassword = document.getElementById('txt2')
 	var oLogin = document.getElementById('span3');
 	var autoLogin = document.getElementById('cb');
+	var url = "http://csit.top/api_user.php";
 	oLogin.onclick = function(){
 		var strUsername = oUsername.value;
 		var strPassword = oPassword.value;
+		
 		var json={
 			username:strUsername,
 			password:strPassword,
 			status:"login"
 		}
-		server(json,function(obj){
+		$.post(url,json,function(str){
+			var obj = JSON.parse(str);
 			if(obj.code == 0){
+				//location.href = "http://127.0.0.1:8020/liangcang/index.html";
 				alert(obj.message)
 				if(autoLogin.checked == true){
 					localStorage.setItem("username",strUsername)
 					localStorage.setItem("password",strPassword)
+					localStorage.setItem("token",obj.data.token);
 				}
-				
 			}else{
 				alert(obj.message)
 			}
@@ -138,7 +142,8 @@
 				password:strPassword,
 				status:"login"
 			}
-			server(json,function(obj){
+			$.post(url,json,function(str){
+				var obj = JSON.parse(str);
 				if(obj.code == 0){
 					alert("自动登录成功");
 				}
@@ -146,4 +151,5 @@
 			});
 		}
 	}
+	
 </script>

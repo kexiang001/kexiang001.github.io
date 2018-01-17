@@ -3,55 +3,15 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<style type="text/css">
-			*{margin: 0;padding: 0;}
-			li{list-style: none;}
-			a{text-decoration: none;}
-			body{
-				height: 2000px;
-			}
-			#header-bg{
-				width:100%;height:50px;background: #25292e;
-			}
-			#header{
-				width:900px;height:50px;margin: 0 auto;
-			}
-			#header img{
-				float: left;margin-right:554px ;
-			}
-			#header ul li a{
-				font-size: 12px;color:#525961
-			}
-			#header ul li.first-li>a{
-				font-size: 12px;color:#cccccc ;
-			}
-			#header ul li{
-				float: left;line-height: 50px;margin-right: 14px;color:#525961
-			}
-			#header ul li.last-li{
-				margin-right: 0px;
-			}
-			#nav{
-				width: 100px;height: 400px;margin-left: 20px;
-			}
-			#nav li{
-				,margin: 20px;
-			}
-			#box ul li{
-				float: left;border: 1px solid red;height: 500px;
-				width: 300px;
-			}
-			#box ul li img{
-				width: 300px;
-			}
-		</style>
+		<link rel="stylesheet" href="css/index.css" />
+		
 	</head>
 	<body>
 		<div id="header-bg">
 			<div id="header">
-				<a href="index.html"><img src="img/header-logo.png"/></a>
+				<a href="index.html"><img id="imga"src="img/header-logo.png"/></a>
 				<ul>
-					<li class="first-li">
+					<li class="first-li" id="first-li">
 						<a href="login.html">登录</a>
 						<a href="register.html">注册</a>
 					</li>
@@ -70,92 +30,182 @@
 				</ul>
 			</div>
 		</div>
-		<ul id="nav">
-			
-		</ul>
+		<div class="dakuangkuang">
+			    <ul id="ul">
+					<li class="shouye">
+						<a href="#">首页</a>
+					</li>
+					<li class="qiyu">
+						<a href="javascript:;">商店</a>
+						<div class="daohuang">
+							<ul id="nav">
+							</ul>
+						</div>
+					</li>
+					<li class="qiyu">
+						<a href="javascript:;">分享</a>
+					</li>
+					<li class="qiyu">
+						<a href="javascript:;">达人</a>
+					</li>
+			    </ul> 
+			    <div class="right">
+			    	<div class="zhongjian" id="zhong"> 
+			    		<input id="input" placeholder="search" type="text" />
+			    		<a class="back" id="backs"></a>
+			    	</div>
+			    </div>
+		</div>
+		<div id="banner">
+			<img id="img"src="img/banner-1.jpg">
+			<a id="pre"href="javascript:;">&lt;</a>
+			<a id="next"href="javascript:;">&gt;</a>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+   		</div>
+		
 		<div id="box">
 			<ul id="list">
 				
 			</ul>
+			<a href="javascript:;" id="more">more</a>
+		</div>
+		<!--对话框-->
+		<div class="chat">
+			<a href="javascript:;">联系客服</a>
+		</div>
+		<div class="chatbox">
+			<ul>
+				<li class="chat-up">
+					<h3>粮仓</h3>
+					<a href="javascript:;"class="xxx">
+						一
+					</a>
+				</li>
+				<li class="chat-mid"></li>
+				<li class="chat-down">
+					<div class="iii">
+						
+					</div>
+					<textarea></textarea>
+					<button class="chatbtn">发送</button>
+				</li>
+			</ul>
 		</div>
 	</body>
 </html>
-<script src="js/login&register.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/chatBox.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
  	var oUl = document.getElementById("nav")
  	var oUla = document.getElementById("list")
-	ajax({
+ 	var oFirst = document.getElementById("first-li")
+ 	var oImga = document.getElementById("imga")
+ 	var oMore = document.getElementById('more')
+ 	var url = "http://csit.top/api_goods.php"
+	var strToken;
+ 	
+	strToken = localStorage.getItem("token")
+//	var  username = localStorage.getItem("username")
+//	if(username != null){
+//		oFirst.innerHTML = username;
+//		oImga.style.marginRight = '560px'
+//		oFirst.style.width = '80px';
+//		oFirst.style.overflow = 'hidden';
+//		oFirst.style.paddingLeft = '32px'
+//		oFirst.style.background = 'url(img/img/header_d_head.png) no-repeat 0 10px'
+//	}
+//	oFirst.onclick= function(){
+//		localStorage.setItem('','')
+//		localStorage.setItem('','')
+//		localStorage.setItem('','');
+//	}
+//	$.ajax({
+//		method: "POST",				// 请求方法		
+//		url: "http://csit.top/api_cart.php",	// 地址
+//		data: {						// 发送给服务器的数据
+//			goods_id: 34233,
+//			number: 1
+//		},
+//		headers: {				// 请求头
+//			token: "2d622a9209535b9fbe212d69b8d5bc62"
+//		},
+//		success: function(str) {
+//			console.log(str)
+//		}
+//	});
+	//首页默认显示
+	func(45);
+
+	$.ajax({
 		method:"GET",
 		url: "http://csit.top/api_cat.php",
 		json:{},
-		pc:function(date){
-			console.log(date)
-			var arr = date.data;
-			console.log(typeof date.data)
+		success:function(str){
+			var obj = JSON.parse(str);
+			var arr = obj.data;
 			for(var i=0;i<arr.length;i++){
 				var oLi = document.createElement("li");
-				oLi.innerHTML = '<a href="#" onclick="func('+ arr[i].cat_id +')">'
+				oLi.innerHTML = '<a href="#" onclick="func('+ arr[i].cat_id+ ')">'
 				+arr[i].cat_name+'</a>';
+				
 				oUl.appendChild(oLi);
+				
 			}
 		}
 	}); 
-//	function func(a){
-//		ajax({
-//		method: "GET",
-//		url: "http://csit.top/api_goods.php",
-//		json: {
-//			cat_id: a,  // 分类： 45， 62
-//			page: 1,
-//			pagesize: 1000
-//		},
-//		pc: function(a) {
-//			
-//			var arr = a.data 
-//			for (var i = 0; i < arr.length; i++) { 
-//				var oLi = document.createElement('li');
-//				var oH2 = document.createElement('h2');
-//				var oP = document.createElement('p');
-//				var oSpan = document.createElement('span');
-//				 oH2.innerHTML = arr[i].goods_name;
-//				 oP.innerHTML = arr[i].goods_desc;
-//				 oSpan.innerHTML = '¥' + arr[i].price;
-//				oLi.innerHTML = '<img src="' +  arr[i].goods_thumb+ '" />'
-//				oLi.appendChild(oH2);
-//				oLi.appendChild(oP);
-//				oLi.appendChild(oSpan);
-//				oUla.appendChild(oLi);
-//				
-//			}
-//			
-//		}
-//	})
-//	}
-function func(a) {
+	//得到商品
+	function func(a) {
 	
-	ajax({
-		method: "GET",
-		url: "http://csit.top/api_goods.php",
-		json: {
-			cat_id: a,  
-			page: 1,
-			pagesize: 1000
-		},
-		pc: function(a) {
-			
-			var b = ""
-			
-			var arr = a.data  
-			for (var i = 0; i < arr.length; i++) {
+	//console.log(a)
+		$.get(url,{
+				cat_id: a,  
+				page: 1,
+				pagesize: 20
+			},
+			function(str) {
+				var obj = JSON.parse(str)
+				var b = ""
 				
-				b +=('<li>'+ '<img src="' +  arr[i].goods_thumb+ '" />'
-				+ '<h2>'+arr[i].goods_name+'</h2>'
-				+'<p>'+arr[i].goods_desc+'</p>'
-				+ '</span>'+'¥' + arr[i].price+'</span>'+'</li>');
+				var arr = obj.data  
+				for (var i = 0; i < arr.length; i++) {
+					var c = Math.floor(Math.random()*300 + 40);
+					b +=('<li>'+ '<h3>'+'<img src="' +  arr[i].goods_thumb+ '"/>'
+					+'</h3>'+'<img src="' +  arr[i].goods_thumb+ '" />'
+					+ '<h2>'+arr[i].goods_name+'</h2>'
+					+'<p>'+arr[i].goods_desc+'</p>'
+					+ '<span>'+'¥' + arr[i].price+'</span>'
+					+'<a href="#" onclick="join('+ arr[i].goods_id +')">'
+					+ '加入购物车</a>'+'<div></div>'
+					+'<h4>'+c+'</h4></li>');
+				}
+				
+				document.getElementById("list").innerHTML = b
 			}
+		)
+}
+function join(a){
+	$.ajax({
+			method:"POST",
+			url: "http://csit.top/api_cart.php",
 			
-			document.getElementById("list").innerHTML = b
-		}
+			data:{
+				goods_id:a,
+				number:1
+			},
+			headers: {				// 请求头
+				token: strToken
+			},
+			success:function(str){
+				var obj = JSON.parse(str)
+				//console.log(obj)
+				alert(obj.message)
+				
+			}
 	})
 }
+
 </script>

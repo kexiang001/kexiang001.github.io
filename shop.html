@@ -101,37 +101,42 @@
 						<th width="170">小计（元）</th>
 						<th width="100">操作</th>
 					</tr>
-					<tr height="90">
-						<td width="120"><input id="radio2" type="checkbox"><a href="javascript:;"><img src="img/shop-1.jpg"></td>
-						<td width="310"><a href="javascript:;">玫瑰身体乳250ml
-</a><h6>一瓶</h6></td>
-						<td class="txt2" width="130"valign="middle"valign="center"><p><a href="javascript:;"id="jian">-</a><span id="num">1</span><a href="javascript:;" id="jia">+</a></p></td>
-						<td class="txt2" width="170"><span id="unitprice">169.00</span></td>
-						<td class="txt2" width="170"><span id="allprice">169</span></td>
-						<td class="txt2" width="100"><a href="javascript:;"id="delete">删除</a></td>
-					</tr>
+				</table>
+				<table border="0" cellspacing="0" cellpadding="0" id="goods">
+					
+					
 				</table>
 			</div>
 			<p class="txt3">良品总价 / ¥<span id="allp">0.00</span></p>
 			<p class="txt4"><a href="shop2.html">立即结算</a></p>
-			<p class="txt5">———<a href="javascript:;">继续购物</a>———</p>
+			<p class="txt5">———<a href="index.html">继续购物</a>———</p>
 	</body>
 </html>
+<script src="js/login&register.js" type="text/javascript" charset="utf-8"></script>
 <script>
+
+	
+var strToken;
+
+
+	
+strToken = localStorage.getItem("token")
+	
+
+var b = 0;
+
+
+	var allPrice=0;
 	var oRadio1 = document.getElementById('radio1');
 	var aInpute = document.getElementsByTagName('input');
-	var oJian = document.getElementById('jian');
-	var oJia = document.getElementById('jia');
-	var oNum = document.getElementById('num');
-	var oUnitprice= document.getElementById('unitprice');
-	var oAllprice= document.getElementById('allprice');
-	var oAllp= document.getElementById('allp');
-	var a = 0;
-	var b = 0;
+	var oGoods = document.getElementById('goods');
+	var allP = document.getElementById('allp');
+	
+	var an = 0;
 	oRadio1.addEventListener('click',function(){
-		b ++ ;
+		an ++ ;
 		for(var i =1;i<aInpute.length;i++){
-			if(b%2 == 0)aInpute[i].checked = false;
+			if(an%2 == 0)aInpute[i].checked = false;
 			else aInpute[i].checked = true;
 		}
 	},false)
@@ -139,27 +144,70 @@
 	if(oRadio1.checked == 'checked'){
 		
 	}
-	
-	var unit = parseInt(oUnitprice.innerHTML);
-	oJia.onclick = function(){
+//	
+	//var unit = parseInt(oUnitprice.innerHTML);
+	function jia(a){
 		a++;
 		
 		if(a >= 10){
 			a=10;
 		}
-		oAllprice.innerHTML = a*unit;
-		oNum.innerHTML = a;
-		oAllp.innerHTML = oAllprice.innerHTML;
+
 	}
-	oJian.onclick = function(){
-		a--;
+
+ajax({
+		method: "POST",   // 请求方式
+		url: "http://csit.top/api_cart.php", // 地址
+		json: {},
+		token: strToken,
+		pc: function(a) {	// 回调函数
+			var arr = a.data   	// 取出数组
 		
-		if(a <= 1){
-			a=1;
+			var str = ""		// 空字符串
+							
+			for (var i = 0; i < arr.length; i++) {	
+				
+				var all = arr[i].goods_number*arr[i].goods_price;
+				
+				b = arr[i].goods_number
+				str +=('<tr height="90"><td width="120"><input id="radio2" type="checkbox">'
+				+'<a href="javascript:;"><img src="'+ arr[i].goods_thumb +'"></td><td width="310"><a 			href="javascript:;">'+arr[i].goods_name+'</a><h6>一瓶</h6></td><td class="txt2" 			width="130"valign="middle"valign="center"><p><a href="javascript:;" onclick="jian('
+				+arr[i].goods_id+','+i+')">-</a><span>'
+				+ b +'</span><a href="javascript:;" onclick="jia('
+				+arr[i].goods_id+','+i+')">+</a></p></td><td class="txt2" width="170"><span 				id="unitprice">'
+				+ arr[i].goods_price +'</span></td><td class="txt2" width="170"><span id="allprice">'
+				+ all +'</span></td><td class="txt2" width="100"><a href="javascript:;"id="delete">'
+				+'删除</a></td></tr>')
+				
+				
+						allPrice +=all;
+				
+				
+				
+			}
+			oGoods.innerHTML = str;
+			allP.innerHTML = allPrice
 		}
-		oAllprice.innerHTML = a*unit;
-		oNum.innerHTML = a;
-		oAllp.innerHTML = oAllprice.innerHTML;
-	}
-	
+})
+function jia(c,i){
+		b=1
+		ajax({
+			method: "POST",   // 请求方式
+			url: "http://csit.top/api_cart.php", // 地址
+			json:{
+				goods_id:c,
+				number:b
+			},
+			token: strToken,
+			pc: function(a) {	// 回调函数
+				var arr = a.data   	// 取出数组
+				// 空字符串
+				
+				//console.log(a.data)
+			}
+	})
+
+}
+
+
 </script>

@@ -23,7 +23,7 @@
 				color: #3789a9;
 			}
 			table tr input.txt2{
-				width: 202px;height: 45px;outline: none;
+				width: 202px;height: 45px;outline: none;float: left;
 			}
 			table tr input.txt3{
 				margin-right: 4px;
@@ -51,6 +51,13 @@
 			.guding img{
 				width:38px;float: left;
 			}
+			#yanzhengcode{
+				width:80px;height:30px;border: 1px solid green;float: left;margin: 8px;
+				line-height: 30px;text-align: center;background: #3789A9;
+			}
+			#change{
+				font-size: 12px;color: #FFF;line-height: 45px;
+			}
 		</style>
 	</head>
 	<body>
@@ -62,15 +69,15 @@
 				</tr>
 				<tr height="55">
 					<th width="164" >用户名</th>
-					<td width="400"><input id="username"class="txt1" type="txte" placeholder="请输入用户名"/></td>
+					<td width="400"><input id="username"class="txt1" type="txte" 						placeholder="请输入用户名"/></td>
 				</tr>
 				<tr height="55">
 					<th width="164">验证码</th>
-					<td width="400"><input class="txt1 txt2" type="txte" placeholder="输入验证码"/> 看不清，换一张</td>
+					<td width="400"><input class="txt1 txt2" id="txt2"type="txte" placeholder="输入验证						码"/> <div id="yanzhengcode"></div><a href="javascript:;"id="change">看不清，换一张</a></td>
 				</tr>
 				<tr height="55">
 					<th width="164">创建密码</th>
-					<td width="400"><input class="txt1" id="password"type="password" placeholder="6－20位字符组成，区分大小写"/> 弱 中 强</td>
+					<td width="400"><input class="txt1" id="password"type="password" 						placeholder="6－20位字符组成，区分大小写"/> 弱 中 强</td>
 				</tr>
 				<tr height="55">
 					<th width="164">密码确认</th>
@@ -78,7 +85,8 @@
 				</tr>
 				<tr height="55">
 					<th width="164"></th>
-					<td width="400"><input class="txt3"  type="checkbox"/>同意<span class="zhuce"> 良仓注册条款</span></td>
+					<td width="400"><input class="txt3" id="txt0" type="checkbox"
+						/>同意<span class="zhuce"> 良仓注册条款</span></td>
 				</tr>
 				<tr height="55">
 					<th width="164"></th>
@@ -102,32 +110,75 @@
 		</div>
 	</body>
 </html>
-<script src="js/login&register.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">
 	var oRegister = document.getElementById('a1');
 	var oLogin = document.getElementById('a2');
 	var oUsername = document.getElementById('username');
 	var oPassword = document.getElementById('password');
-	var agree = document.querySelectorAll('table tr td .txt3');
+	var agree = document.getElementById('txt0');
+	var oCode = document.getElementById('yanzhengcode');
+	var oTxt = document.getElementById('txt2');
 	
-	//console.log(agree)
+	var url = "http://csit.top/api_user.php";
+	 //oTxt.value = 11
+	
+	var arr = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+	
+	var code = ''
+	
+	gitCode();
+	$('#change').click(function(){
+		
+		code = ''
+		gitCode()
+	})
+	
+	//得到四位数验证码
+	function gitCode(){
+		for(var i=0;i<4;i++){
+			var random = Math.floor(Math.random()*62)
+			code +=arr[random]
+			
+		}
+		oCode.innerHTML = code
+	}
+	
+	oTxt.innerHTML
 	oRegister.onclick = function(){
 		var stroUsername = oUsername.value;
 		var stroPassword = oPassword.value;
+		
 		var json={
 			username:stroUsername,
 			password:stroPassword,
 			status:"register"
 		}
-		
-		server(json,function(obj){
-			if(obj.code == 0){
-				alert('注册成功');
+		//console.log(oTxt.value)
+		if(oCode.innerHTML == oTxt.value){
+			alert('验证码正确')
+			if(agree.checked == true){
+				$.post(url,json,function(str){
+					var obj = JSON.parse(str);
+					if(obj.code == 0){
+						alert('注册成功');
+					}else{
+						alert(obj.message);
+					}
+				});
+			}else{
+				alert("请同意条款")
 			}
-		});
+		}else{
+			alert('验证码错误')
+			code = ''
+			gitCode()
+		}
+		//console.log(code)
+		
 	}
 	oLogin.onclick = function(){
-		location.href = "http://127.0.0.1:8020/liangcang/login.html";
+		location.href = "http://127.0.0.1:8020/jquery/login.html";
 	}
 
 </script>
